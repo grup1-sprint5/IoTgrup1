@@ -1,34 +1,60 @@
+# Subsistema
 
-El diagrama de disseny de subsistema: existeix? s’aprova?
+## Diagrama de disseny
 
+El diagrama de disseny del subsistema **existeix** i es troba al mateix repositori:
 
+[Veure diagrama](./diagrama.png)
 
-Quin model de dades s’utilitzarà.
-MongoDB Atlas
+Estat: **Pendent d’aprovació**
 
-A partir de les proves que ja teniu fetes, decidir quines funcionalitats del subsistema (posició, etc.) accepteu i decidiu continuar desenvolupant.
-Tenim fetes diferents proves, com ara, enviar dades desde la raspberry i enviant les dades a un webhook com a prova inicial.
+---
 
-Les funcionalitats que mantindrem són:
+## Model de dades
 
-Mostrar l’ubicació de la raspberry (GPS)
-Actuador on/off per veure l’estat del vehicle
-Proves Extra (fer quan tinguem lo principal ja fet)
-Sonar: Per medir la distància entre un objecte i el vehicle
-Càmara: Per veure l’interior del vehicle en qualsevol moment
+**Base de dades:** MongoDB Atlas
 
+---
 
-Com implementareu l’actuador on/off
--Hardware: S'utilitzarà un relé connectat a un pin digital de la placa per tallar/permetre el pas de corrent.
--Lògica: El microcontrolador consultarà l'estat a l'API de Laravel (0=OFF / 1=ON) i activarà el relé segons correspongui.
--Comunicació: Via API/Webhooks exclusiva entre Laravel i el subsistema; el frontend mai parlarà directament amb el hardware.
+## Funcionalitats acceptades
 
-Què necessitareu a partir d’ara que no tingueu
+A partir de les proves realitzades (enviament de dades des de la Raspberry i recepció mitjançant webhook), es decideix continuar amb:
 
-Ens hem d’assegurar que cada equip tingui:
+### Funcionalitats principals
 
-- Relé
-	- PIla
-	- Gps 
-	- Ampliador de cobertura
+- Mostrar ubicació (GPS)
+- Actuador ON/OFF per consultar estat del vehicle
 
+### Proves extra (fase posterior)
+
+- Sonar – Mesurar distància entre objecte i vehicle  
+- Càmera – Visualització interior del vehicle en temps real  
+
+---
+
+## Implementació actuador ON/OFF
+
+### Hardware
+- Relé connectat a un pin digital de la placa
+- Permet tallar o donar pas al corrent
+
+### Lògica
+- El microcontrolador consulta l’estat a l’API de Laravel  
+- `0 = OFF`  
+- `1 = ON`  
+- Activa/desactiva el relé segons el valor rebut
+
+### Comunicació
+- Comunicació exclusiva via **API/Webhooks** entre Laravel i el subsistema
+- El frontend **no** es comunica directament amb el hardware
+
+---
+
+## Necessitats pendents
+
+Cada equip ha de disposar de:
+
+- Relé  
+- Pila  
+- GPS  
+- Ampliador de cobertura  
