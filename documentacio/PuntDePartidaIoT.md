@@ -54,7 +54,7 @@ A partir de les proves realitzades (enviament de dades des de la Raspberry i rec
 
 Cada equip ha de disposar de:
 
-- Relé  
+- Relé (10 amperes)
 - Pila  
 - GPS  
 - Ampliador de cobertura  
