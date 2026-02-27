@@ -1,0 +1,11 @@
+# ─── Servidor web ──────────────────────────────────────────────────────────────
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+
+# ─── MongoDB (driver async) ────────────────────────────────────────────────────
+motor==3.6.0
+pymongo[srv]==4.9.2       # versió compatible amb motor 3.6.0
+
+# ─── Validació i entorn ────────────────────────────────────────────────────────
+pydantic==2.10.4
+python-dotenv==1.0.1

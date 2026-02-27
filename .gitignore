@@ -1,0 +1,18 @@
+# ─── Entorn virtual Python ─────────────────────────────────────────────────────
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.env
+# ─── Variables d'entorn (mai pujar a Git!) ─────────────────────────────────────
+.env
+
+# ─── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+.enunciat-sprint5.md
