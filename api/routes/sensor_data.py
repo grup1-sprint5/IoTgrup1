@@ -28,6 +28,30 @@ def _doc_to_dict(doc: dict) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# GET  /api/sensor-data/devices
+# ---------------------------------------------------------------------------
+@router.get(
+    "/devices",
+    status_code=status.HTTP_200_OK,
+    response_model=APIResponse,
+    summary="Llista de dispositius (device_id) disponibles"
+)
+async def get_devices():
+    """Retorna els `device_id` únics que han enviat lectures."""
+    collection = get_collection(COLLECTION_NAME)
+
+    device_ids = await collection.distinct("device_id")
+    device_ids = [d for d in device_ids if d]
+    device_ids.sort()
+
+    return APIResponse(
+        success=True,
+        message=f"{len(device_ids)} dispositius trobats",
+        data={"devices": device_ids, "total": len(device_ids)}
+    )
+
+
+# ---------------------------------------------------------------------------
 # POST  /api/sensor-data
 # ---------------------------------------------------------------------------
 @router.post(
