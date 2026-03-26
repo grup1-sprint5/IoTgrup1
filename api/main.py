@@ -14,6 +14,7 @@ from contextlib import asynccontextmanager
 
 from api.database import client
 from api.routes.sensor_data import router as sensor_router
+from api.routes.actuator import router as actuator_router
 
 
 # ---------------------------------------------------------------------------
@@ -57,6 +58,7 @@ app.add_middleware(
 # Rutes
 # ---------------------------------------------------------------------------
 app.include_router(sensor_router)
+app.include_router(actuator_router)
 
 
 # ---------------------------------------------------------------------------

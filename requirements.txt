@@ -6,6 +6,9 @@ uvicorn[standard]==0.34.0
 motor==3.6.0
 pymongo[srv]==4.9.2       # versió compatible amb motor 3.6.0
 
+# ─── HTTP client async (per cridar la Raspberry Pi) ───────────────────────────
+httpx==0.27.2
+
 # ─── Validació i entorn ────────────────────────────────────────────────────────
 pydantic==2.10.4
 python-dotenv==1.0.1
