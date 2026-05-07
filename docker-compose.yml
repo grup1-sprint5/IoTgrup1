@@ -11,6 +11,7 @@ services:
       - .env
     networks:
       - iot_net
+      - sims-back_default
 
   cloudflared:
     image: cloudflare/cloudflared:latest
@@ -25,3 +26,5 @@ services:
 networks:
   iot_net:
     name: iot_net
+  sims-back_default:
+    external: true
