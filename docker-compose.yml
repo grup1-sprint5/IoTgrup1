@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  iot-api:
+    build: .
+    container_name: iot_api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    networks:
+      - iot_net
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: iot_cloudflared
+    restart: unless-stopped
+    command: tunnel --url http://iot-api:8000 --no-autoupdate
+    depends_on:
+      - iot-api
+    networks:
+      - iot_net
+
+networks:
+  iot_net:
+    name: iot_net

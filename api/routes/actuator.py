@@ -13,8 +13,14 @@ from pydantic import BaseModel, field_validator
 
 router = APIRouter(prefix="/api/actuator", tags=["Actuator"])
 
-# URL base de l'API Flask que corre a la Raspberry Pi
-RASPI_API_URL = os.getenv("RASPI_API_URL", "http://raspberrypi.local:5000")
+def raspi_api_url() -> str:
+        """URL base de l'API Flask que corre a la Raspberry Pi.
+
+        IMPORTANT: dins Docker, `raspberrypi.local` sovint no resol. Configura-ho via env:
+            - RASPI_API_URL=http://192.168.x.x:5000
+        """
+        base = os.getenv("RASPI_API_URL") or os.getenv("ACTUATOR_URL") or "http://raspberrypi.local:5000"
+        return base.rstrip("/")
 
 
 # ---------------------------------------------------------------------------
@@ -56,14 +62,15 @@ async def set_actuator_state(command: ActuatorCommand):
     Reenvia l'ordre ON/OFF a l'API Flask de la Raspberry Pi.
     La Raspberry Pi activa o apaga el LED físic i retorna l'estat actual.
     """
-    url = f"{RASPI_API_URL}/actuator"
+    base = raspi_api_url()
+    url = f"{base}/actuator"
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
             response = await client.post(url, json={"state": command.state})
     except httpx.ConnectError:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail=f"No s'ha pogut connectar amb la Raspberry Pi a {RASPI_API_URL}"
+            detail=f"No s'ha pogut connectar amb la Raspberry Pi a {base}"
         )
     except httpx.TimeoutException:
         raise HTTPException(
@@ -71,9 +78,21 @@ async def set_actuator_state(command: ActuatorCommand):
             detail="La Raspberry Pi no ha respost a temps"
         )
 
-    raspi_data = response.json()
+    try:
+        raspi_data = response.json()
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Resposta invàlida de la Raspberry Pi (no és JSON)"
+        )
 
-    if response.status_code != 200 or not raspi_data.get("success"):
+    if response.status_code != 200:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=raspi_data.get("message") or f"Raspberry Pi error ({response.status_code})"
+        )
+
+    if not raspi_data.get("success"):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=raspi_data.get("message", "Error desconegut a la Raspberry Pi")
@@ -100,14 +119,15 @@ async def get_actuator_status():
     """
     Consulta l'API Flask de la Raspberry Pi per obtenir l'estat actual del LED.
     """
-    url = f"{RASPI_API_URL}/status"
+    base = raspi_api_url()
+    url = f"{base}/status"
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
             response = await client.get(url)
     except httpx.ConnectError:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail=f"No s'ha pogut connectar amb la Raspberry Pi a {RASPI_API_URL}"
+            detail=f"No s'ha pogut connectar amb la Raspberry Pi a {base}"
         )
     except httpx.TimeoutException:
         raise HTTPException(
@@ -115,7 +135,19 @@ async def get_actuator_status():
             detail="La Raspberry Pi no ha respost a temps"
         )
 
-    raspi_data = response.json()
+    try:
+        raspi_data = response.json()
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Resposta invàlida de la Raspberry Pi (no és JSON)"
+        )
+
+    if response.status_code != 200:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=raspi_data.get("message") or f"Raspberry Pi error ({response.status_code})"
+        )
 
     return ActuatorResponse(
         success=True,
