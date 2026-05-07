@@ -21,7 +21,7 @@ import requests
 
 # IP i port del servidor on corre el microservei FastAPI
 # Per trobar la IP del servidor: ip addr   o bé   hostname -I
-API_URL = "https://abstract-handled-depends-anthropology.trycloudflare.com/api/sensor-data"
+API_URL = "https://alaska-prizes-sunny-libraries.trycloudflare.com/api/sensor-data"
 
 # Pins GPIO (numeració BCM)
 GPIO_ECHO    = 24
