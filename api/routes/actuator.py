@@ -65,7 +65,7 @@ async def set_actuator_state(command: ActuatorCommand):
     base = raspi_api_url()
     url = f"{base}/actuator"
     try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
+        async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.post(url, json={"state": command.state})
     except httpx.ConnectError:
         raise HTTPException(
@@ -122,7 +122,7 @@ async def get_actuator_status():
     base = raspi_api_url()
     url = f"{base}/status"
     try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
+        async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.get(url)
     except httpx.ConnectError:
         raise HTTPException(
